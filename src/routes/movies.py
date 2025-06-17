@@ -1,9 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
-
 from sqlalchemy.orm import Session
 from sqlalchemy import select, func
-
-
 
 from database import get_db
 from schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
@@ -35,8 +32,7 @@ def get_movies(
     offset = (page - 1) * per_page
     result = db.execute(select(MovieModel).offset(offset).limit(per_page))
     movies = result.scalars().all()
-    if not movies:
-        raise HTTPException(status_code=404, detail="No movies found.")
+
     return {
         "movies": movies,
         "prev_page": f"/theater/movies/?page={page - 1}&per_page={per_page}" if page > 1 else None,
